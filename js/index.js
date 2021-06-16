@@ -10,19 +10,18 @@ form.addEventListener('submit', function(event){
     .then(function(data){
         let dataKeys = Object.keys(data)
         let dataValues = Object.values(data)
-        let userNameHeading = document.createElement('h2')
-        userNameHeading.setAttribute('id', 'userNameHeading')
-        let userName = dataValues[2][0].login
-        userNameHeading.innerHTML = 'Username:'
-        document.body.appendChild(userNameHeading)
-        let displayUserName = document.createElement('p')
-        displayUserName.setAttribute('id', 'displayUserName')
-        displayUserName.innerHTML = userName
-        document.body.appendChild(displayUserName)
-
-        // console.log(dataKeys)
-        // console.log(dataValues[2][0].login)
-    }
+        let userList = document.getElementById('user-list')
+        let userInfo
+        for (let i=0;i<dataValues[2].length;i++){
+            userInfo = dataValues[2][i]
+            userInnerList.innerHTML = `Username: ${userInfo.login}>`
+            avatarImg.setAttribute('src', `${userInfo.avatar_url}`)
+            profile.innerHTML = 'Profile'
+            profile.setAttribute('target', '_blank')
+            profile.setAttribute('href', `https://github.com/${userInfo.login}`)
+        console.log(dataKeys)
+        console.log(dataValues)
+    }}
     )
 })
 })
