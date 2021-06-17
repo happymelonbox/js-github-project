@@ -35,15 +35,15 @@ form.addEventListener('submit', function(event){
                     let repoItems = repoList.appendChild(document.createElement('li'))
                     repoCountLi.innerHTML = `Total number of Repositories: ${repoCount}`
                     for (i=0;i<repoCount;i++){
-                        let repoLink = repoItems.appendChild(document.createElement('li'))
-                        let repoItem = repoLink.appendChild(document.createElement('a'))
+                        let repoItem = repoItems.appendChild(document.createElement('li').appendChild(document.createElement('a')))
                         let repoName = repos[i].name
+                        repoItem.parentElement.setAttribute('class', 'repoItem')
+                        repoItem.setAttribute('class', 'eachRepo')
                         repoItem.innerHTML = `${repoName}`
                         repoItem.setAttribute('href', `https://www.github.com/${userInfo.login}/${repoName}`)
                         repoItem.setAttribute('target', '_blank')
 
                     }
-                    userRepos = userListUl.appendChild(document.createElement('li'))
                 })
             })
         }
