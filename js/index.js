@@ -13,6 +13,7 @@ form.addEventListener('submit', function(event){
         let userList = document.getElementById('user-list')
         let repoList = document.getElementById('repos-list')
         let userInfo
+        let repoName
         const createNewUserList = function(){
             let userListUl = userList.appendChild(document.createElement('li')).appendChild(document.createElement('ul'))
             userListUl.setAttribute('class', 'Users')
@@ -22,8 +23,12 @@ form.addEventListener('submit', function(event){
             userListAvatar.setAttribute('src', `${userInfo.avatar_url}`)
             userListProfile = userListUl.appendChild(document.createElement('li')).appendChild(document.createElement('a'))
             userListProfile.innerHTML = 'Profile'
+            userListProfile.setAttribute('id', `${userInfo.login}`)
             userListProfile.addEventListener('click', function(){
-                fetch(`https://api.github.com/users/${userInfo.login}/repos?per_page=100&type=owner`)
+                let user = userInfo.login
+                fetch(`https://api.github.com/users/${user}/repos?per_page=100&type=owner`,{
+                    cache: 'no-store'
+                })
                 .then(resp => resp.json())
                 .then((json) => {
                     let repoCount = Object(json).length
@@ -34,23 +39,19 @@ form.addEventListener('submit', function(event){
                     let repoCountLi = userListUl.appendChild(document.createElement('li'))
                     let repoItems = repoList.appendChild(document.createElement('li'))
                     repoCountLi.innerHTML = `Total number of Repositories: ${repoCount}`
-                    for (i=0;i<repoCount;i++){
+                    for (let i=0;i<repoCount;i++){
                         let repoItem = repoItems.appendChild(document.createElement('li').appendChild(document.createElement('a')))
-                        let repoName = repos[i].name
+                        repoName = repos[i].name
+                        repoItem.innerHTML = `${repoName}`
                         repoItem.parentElement.setAttribute('class', 'repoItem')
                         repoItem.setAttribute('class', 'eachRepo')
-                        repoItem.innerHTML = `${repoName}`
                         repoItem.setAttribute('href', `https://www.github.com/${userInfo.login}/${repoName}`)
                         repoItem.setAttribute('target', '_blank')
-
-                    }
-                })
-            })
-        }
-        for (let i=0;i<dataValues[2].length;i++){
-            userInfo = dataValues[2][i]
-            createNewUserList(userInfo)
-        }
-        })
-})
-})
+                    }})
+                    })
+                }
+                for (let i=0;i<dataValues[2].length;i++){
+                    userInfo = dataValues[2][i]
+                    createNewUserList(userInfo)
+                }
+                })})})
