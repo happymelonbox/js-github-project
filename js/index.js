@@ -11,6 +11,7 @@ form.addEventListener('submit', function(event){
         let dataKeys = Object.keys(data)
         let dataValues = Object.values(data)
         let userList = document.getElementById('user-list')
+        let repoList = document.getElementById('repos-list')
         let userInfo
         const createNewUserList = function(){
             let userListUl = userList.appendChild(document.createElement('li')).appendChild(document.createElement('ul'))
@@ -21,19 +22,28 @@ form.addEventListener('submit', function(event){
             userListAvatar.setAttribute('src', `${userInfo.avatar_url}`)
             userListProfile = userListUl.appendChild(document.createElement('li')).appendChild(document.createElement('a'))
             userListProfile.innerHTML = 'Profile'
-            userListProfile.setAttribute('target', '_blank')
-            userListProfile.setAttribute('href', `https://github.com/${userInfo.login}`)
             userListProfile.addEventListener('click', function(){
-                fetch(`https://api.github.com/users/${input}/repos?per_page=100&type=owner`)
+                fetch(`https://api.github.com/users/${userInfo.login}/repos?per_page=100&type=owner`)
                 .then(resp => resp.json())
                 .then((json) => {
-                    console.log(Object(json))
                     let repoCount = Object(json).length
+                    let repos = Object(json)
                     if (repoCount === undefined){
-                        return repoCount = `0`
+                        return repoCount = `No repositories available`
                     }
                     let repoCountLi = userListUl.appendChild(document.createElement('li'))
+                    let repoItems = repoList.appendChild(document.createElement('li'))
                     repoCountLi.innerHTML = `Total number of Repositories: ${repoCount}`
+                    for (i=0;i<repoCount;i++){
+                        let repoLink = repoItems.appendChild(document.createElement('li'))
+                        let repoItem = repoLink.appendChild(document.createElement('a'))
+                        let repoName = repos[i].name
+                        repoItem.innerHTML = `${repoName}`
+                        repoItem.setAttribute('href', `https://www.github.com/${userInfo.login}/${repoName}`)
+                        repoItem.setAttribute('target', '_blank')
+
+                    }
+                    userRepos = userListUl.appendChild(document.createElement('li'))
                 })
             })
         }
