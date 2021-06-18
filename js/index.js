@@ -32,14 +32,20 @@ document.addEventListener('DOMContentLoaded', function(){
                     .then(resp => resp.json())
                     .then((json) => {
                         let repos = Object(json)
-                        let repoCountLi, repoItems
-                        if (!isClicked){
-                            isClicked = true
+                        let repoCountLi, repoItems, allCurrentRepos, totalRepos
+                        if (isClicked){
+                            allCurrentRepos = document.querySelectorAll('li.repoItem')
+                            allCurrentRepos[0].remove()
+                            totalRepos = document.querySelectorAll('li.totalRepos')
+                            totalRepos[0].remove()
+                        }
                             if (repos.length === undefined || repos.length === 0){
                                 alert(`No repositories available`)
                             }
+                            isClicked = true
                             repoCountLi = userListUl.appendChild(document.createElement('li'))
                             repoItems = repoList.appendChild(document.createElement('li'))
+                            repoCountLi.setAttribute('class', 'totalRepos')
                             repoCountLi.innerHTML = `Total number of Repositories: ${repos.length}`
                             for (let i=0;i<repos.length;i++){
                                 let repoItem = repoItems.appendChild(document.createElement('li').appendChild(document.createElement('a')))
@@ -50,21 +56,6 @@ document.addEventListener('DOMContentLoaded', function(){
                                 repoItem.setAttribute('href', `https://www.github.com/${user}/${repoName}`)
                                 repoItem.setAttribute('target', '_blank')
                             }
-                        } else {
-                            repoList.removeChild(repoItems)
-                            repoCountLi = userListUl.appendChild(document.createElement('li'))
-                            repoItems = repoList.appendChild(document.createElement('li'))
-                            repoCountLi.innerHTML = `Total number of Repositories: ${repos.length}`
-                            for (let i=0;i<repos.length;i++){
-                            let replacementRepo = repoItems.appendChild(document.createElement('li').appendChild(document.createElement('a')))
-                            repoName = repos[i].name
-                            replacementRepo.innerHTML = `${repoName}`
-                            replacementRepo.parentElement.setAttribute('class', 'repoItem')
-                            replacementRepo.setAttribute('class', 'eachRepo')
-                            replacementRepo.setAttribute('href', `https://www.github.com/${user}/${repoName}`)
-                            replacementRepo.setAttribute('target', '_blank')
-                            }
-                        }
                     })
                 })
             }
