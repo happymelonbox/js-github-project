@@ -20,7 +20,11 @@ ul {
   margin: 30px;
 }
 
-a {
+.eachRepo{
+  display: block;
+}
+
+li>a {
   text-align: center;
   text-decoration: none;
   color: black;

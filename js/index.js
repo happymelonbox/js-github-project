@@ -1,19 +1,18 @@
 
 document.addEventListener('DOMContentLoaded', function(){
-let form = document.getElementById('github-form')
 
-form.addEventListener('submit', function(event){
+    const form = document.getElementById('github-form')
+
+    form.addEventListener('submit', function(event){
     event.preventDefault()
     let input = document.getElementById('search').value
     fetch(`https://api.github.com/search/users?q=${input}`)
     .then(response => response.json())
     .then(function(data){
-        let dataKeys = Object.keys(data)
         let dataValues = Object.values(data)
         let userList = document.getElementById('user-list')
         let repoList = document.getElementById('repos-list')
-        let userInfo
-        let repoName
+        let userInfo, repoName
         const createNewUserList = function(){
             let user = userInfo.login
             let userListUl = userList.appendChild(document.createElement('li')).appendChild(document.createElement('ul'))
@@ -33,7 +32,7 @@ form.addEventListener('submit', function(event){
                 .then((json) => {
                     let repos = Object(json)
                     if (repos.length === undefined || repos.length === 0){
-                        return repos = `No repositories available`
+                        alert(`No repositories available`)
                     }
                     let repoCountLi = userListUl.appendChild(document.createElement('li'))
                     let repoItems = repoList.appendChild(document.createElement('li'))
