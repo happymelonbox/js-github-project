@@ -2,11 +2,25 @@
 document.addEventListener('DOMContentLoaded', function(){
 
     const form = document.getElementById('github-form')
+    let searchParam = `https://api.github.com/search/users?q=${input}`
+    let toggleButton, input
 
+    toggleButton = document.getElementById('toggle')
+    toggleButton.addEventListener('click', function(){
+        if (toggleButton.innerHTML === 'Click to search for users'){
+            toggleButton.innerHTML = 'Click to search for users'
+            search = 'users'
+        } else {
+            toggleButton.innerHTML = 'Click to search for Repositories'
+            search = 'repos'
+        }
+    })
     form.addEventListener('submit', function(event){
+        // searchParam = `https://api.github.com/search/users?q=${input}`
+        // searchParam = `https://api.github.com/search/repositories`
         event.preventDefault()
-        let input = document.getElementById('search').value
-        fetch(`https://api.github.com/search/users?q=${input}`)
+        input = document.getElementById('search').value
+        fetch(`${searchParam}`)
         .then(response => response.json())
         .then(function(data){
             let dataValues = Object.values(data)
