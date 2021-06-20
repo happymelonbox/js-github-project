@@ -6,25 +6,19 @@ document.addEventListener('DOMContentLoaded', function(){
 
     toggleButton = document.getElementById('toggle')
     toggleButton.addEventListener('click', function(event){
-        event.preventDefault()
-        if (toggleButton.innerHTML === 'Click to search for users'){
-            toggleButton.innerHTML = 'Click to search for Repositories'
-            search = 'users'
-        } else {
+        if (toggleButton.className === 'toggleToRepos' || toggleButton.className === undefined){
             toggleButton.innerHTML = 'Click to search for users'
-            search = 'repos'
+            toggleButton.setAttribute('class', 'toggleToUsers')
+        } else if (toggleButton.className === 'toggleToUsers' || toggleButton.className === undefined){
+            toggleButton.innerHTML = 'Click to search for repositories'
+            toggleButton.setAttribute('class', 'toggleToRepos')
         }
     })
     form.addEventListener('submit', function(event){
         event.preventDefault()
         input = document.getElementById('search').value
-        let searchParam
-        if(search === 'users'){
-        searchParam = 'https://api.github.com/search/users?q='+input}
-        else if (search === 'repos'){
-        searchParam = 'https://api.github.com/search/repositories'
-        }
-        fetch(searchParam)
+        if(toggleButton.className === 'toggleToRepos'){
+        fetch(`https://api.github.com/search/users?q=${input}`)
         .then(response => response.json())
         .then(function(data){
             let dataValues = Object.values(data)
@@ -32,6 +26,9 @@ document.addEventListener('DOMContentLoaded', function(){
             let repoList = document.getElementById('repos-list')
             let userInfo, repoName
             let isClicked = false
+            if(input === 0 || input === undefined || input === ''){
+                return alert('Please input a keyword')
+            }
             const createNewUserList = function(){
                 let user = userInfo.login
                 let userListUl = userList.appendChild(document.createElement('li')).appendChild(document.createElement('ul'))
@@ -82,5 +79,12 @@ document.addEventListener('DOMContentLoaded', function(){
                     createNewUserList(userInfo.login)
                 }
         })
-    })
-})
+    }else if (toggleButton.className === 'toggleToUsers'){
+        fetch(`https://api.github.com/search/repositories?q=${input} in:name`, {
+        headers: {
+                'Accept': 'application/vnd.github.v3.text-match+json'}})
+        .then(resp => resp.json())
+        .then((data) => {
+            console.log(data)
+        })}
+})})
