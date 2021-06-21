@@ -23,6 +23,10 @@ ul {
 .eachRepo{
   display: block;
 }
+.repoItem{
+  margin-left: auto;
+  margin-right: auto;
+}
 
 li>a {
   text-align: center;
