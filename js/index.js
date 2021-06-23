@@ -2,6 +2,7 @@
 document.addEventListener('DOMContentLoaded', function(){
 
     const form = document.getElementById('github-form')
+    const URL = 'https://api.github.com/'
     let toggleButton, input, isClicked
     let usersDisplayed = false
     let reposDisplayed = false
@@ -20,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function(){
         event.preventDefault()
         input = document.getElementById('search').value
         if(toggleButton.className === 'toggleToRepos'){
-        fetch(`https://api.github.com/search/users?q=${input}`)
+        fetch(`${URL}search/users?q=${input}`)
         .then(response => response.json())
         .then(function(data){
             let dataValues = Object.values(data)
@@ -30,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function(){
             isClicked = false
             usersDisplayed = true
             if(input === 0 || input === undefined || input === ''){
-                return alert('Please input a keyword')
+                alert('Please input a keyword')
             }
             if(reposDisplayed){
                 displayedRepos = document.querySelectorAll('li.repoItem')
@@ -50,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 userListProfile.innerHTML = 'Profile'
                 userListProfile.setAttribute('id', `${user}`)
                 userListProfile.addEventListener('click', function(){
-                    fetch(`https://api.github.com/users/${user}/repos?per_page=100&type=owner`,{
+                    fetch(`${URL}users/${user}/repos?per_page=100&type=owner`,{
                         cache: 'no-store'
                     })
                     .then(resp => resp.json())
@@ -59,6 +60,7 @@ document.addEventListener('DOMContentLoaded', function(){
                         let repoCountLi, repoItems, allCurrentRepos, totalRepos
                             if (repos.length === undefined || repos.length === 0){
                                 alert(`No repositories available`)
+                                return isClicked = true
                             }
                             if (isClicked){
                                 allCurrentRepos = document.querySelectorAll('li.repoItem')
@@ -71,16 +73,6 @@ document.addEventListener('DOMContentLoaded', function(){
                                 }
                             }
                             isClicked = true
-                            if (isClicked){
-                            allCurrentRepos = document.querySelectorAll('li.repoItem')
-                            for(i=0;i<allCurrentRepos.length;i++){
-                                allCurrentRepos[i].remove()
-                            }
-                            totalRepos = document.querySelectorAll('li.totalRepos')
-                            for(j=0;j<allCurrentRepos.length;j++){
-                                totalRepos[j].remove()
-                            }
-                        }
                             repoCountLi = userListUl.appendChild(document.createElement('li'))
                             repoItems = repoList.appendChild(document.createElement('li'))
                             repoCountLi.setAttribute('class', 'totalRepos')
@@ -91,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function(){
                                 repoItem.innerHTML = `${repoName}`
                                 repoItem.parentElement.setAttribute('class', 'repoItem')
                                 repoItem.setAttribute('class', 'eachRepo')
-                                repoItem.setAttribute('href', `https://www.github.com/${user}/${repoName}`)
+                                repoItem.setAttribute('href', `${URL}${user}/${repoName}`)
                                 repoItem.setAttribute('target', '_blank')
                             }
                     })
@@ -103,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function(){
                 }
         })
             }else if (toggleButton.className === 'toggleToUsers'){
-                fetch(`https://api.github.com/search/repositories?q=${input} in:name&per_page=100`, {
+                fetch(`${URL}search/repositories?q=${input} in:name&per_page=100`, {
                     headers: {
                         'Accept': 'application/vnd.github.v3.text-match+json'}})
                 .then(resp => resp.json())
@@ -124,23 +116,17 @@ document.addEventListener('DOMContentLoaded', function(){
                             allCurrentRepos[i].remove()
                         }
                     }
-                    // if(reposDisplayed){
-                    //     displayedRepos = document.querySelectorAll('li.repoItem')
-                    //     for (i=0;i<displayedRepos.length;i++){
-                    //         displayedRepos[i].remove()
-                    //     }
-                    // }
                     repoCountLi = repoList.appendChild(document.createElement('li'))
                     repoItems = repoList.appendChild(document.createElement('li'))
                     repoCountLi.setAttribute('class', 'totalRepos repoItem')
-                    repoCountLi.innerHTML = `Total number of Repositories: ${foundRepos.length}`+'<br/><br/>'
+                    repoCountLi.innerHTML = `Total number of repositories containing '${input}' in the name: ${foundRepos.length}`+'<br/><br/>'
                     for(j=0;j<foundRepos.length;j++){
                         eachFoundRepo = foundRepos[j]
                         repoUsername = eachFoundRepo.owner.login
                         repoName = eachFoundRepo.name
                         repoUrl = eachFoundRepo.html_url
                         let repoItem = repoItems.appendChild(document.createElement('li').appendChild(document.createElement('a')))
-                        repoItem.innerHTML = '<strong>Repository name: </strong>'+repoName+'<br/>'+'<strong>Repository owner: </strong>'+repoUsername+'<br/>'+'<strong>Repository Link: </strong>'+repoUrl+'<br/><br/>'
+                        repoItem.innerHTML = '<strong>Repository name: </strong>'+repoName+'<br/>'+'<strong>Repository owner: </strong>'+repoUsername+'<br/>'+"<strong><a class='repoLink' target='_blank' href="+ `${repoUrl}`+'>Go to repo</a></strong><br/><br/>'
                         repoItem.parentElement.setAttribute('class', 'repoItem')
                         repoItem.setAttribute('class', 'eachRepo')
                         repoItem.setAttribute('href', `${repoUrl}`)

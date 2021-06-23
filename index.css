@@ -12,6 +12,10 @@ html{
   display: flex;
 }
 
+li{
+  display: block;
+}
+
 ul {
   list-style: none;
 }
@@ -26,6 +30,12 @@ ul {
 .repoItem{
   margin-left: auto;
   margin-right: auto;
+}
+
+.repolink{
+  text-decoration: none;
+  color: black;
+  cursor: pointer;
 }
 
 li>a {
